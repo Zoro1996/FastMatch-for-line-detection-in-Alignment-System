@@ -47,18 +47,18 @@ Point2f GetCrossPoint(Mat&srcImage)
 	Mat edges;
 	Mat dstImage = Mat::zeros(srcImage.size(), srcImage.type());
 	// Find the edges in the image using canny detector
-	Canny(srcImage, edges, 50, 200);
+	Canny(srcImage, edges, 150, 200);
 	// Create a vector to store lines of the image
 	vector<Vec4f> lines;
 	vector<Point>linePointX, linePointY;
 	// Apply Hough Transform
-	HoughLinesP(edges, lines, 1, CV_PI / 180, 50, 50, 100);
+	HoughLinesP(edges, lines, 1, CV_PI / 180, 100, 100, 50);
 
 	// Draw lines on the image
 	float epsilon = 0.001;
 	for (size_t i = 0; i < lines.size(); i++) {
 		Vec4f l = lines[i];
-		//line(dstImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255), 3, LINE_AA);
+		line(srcImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 3, LINE_AA);
 		if (abs((l[3] - l[1]) / (l[2] - l[0] + epsilon)) > 5)
 		{
 			linePointY.push_back(Point(l[0], l[1]));
@@ -69,6 +69,7 @@ Point2f GetCrossPoint(Mat&srcImage)
 			linePointX.push_back(Point(l[0], l[1]));
 			linePointX.push_back(Point(l[2], l[3]));
 		}
+
 	}
 
 	Vec4f fitLineX, fitLineY;
@@ -462,7 +463,6 @@ tuple<int, int, float> FastMatch(Mat &srcImage, Mat &maskImage,
 		vector<tuple<int, int, float>>().swap(tempTransNet);
 
 		/*¸üÐÂL_DeltaÓë¦Ä*/
-		//L_Delta /= 2;
 		N_Delta /= 2;
 		delta = delta * factor;
 
